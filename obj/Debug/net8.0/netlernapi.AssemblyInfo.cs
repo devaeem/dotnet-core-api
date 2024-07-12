@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+30dd9411c469cc891de18c28144ee4e0dfaafdda")]
 [assembly: System.Reflection.AssemblyProductAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
