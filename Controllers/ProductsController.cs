@@ -25,7 +25,7 @@ namespace ControllerBasedApiSample.Controllers
 
    var res = new
    {
-    msg = "Fetch Data Products Sucessfully",
+    msg = "Fetch Data Products Successfully",
     data = Summaries,
     pageProduct = pagination.Page,
     pageSizeProduct = pagination.PageSize

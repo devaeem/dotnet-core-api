@@ -1,6 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using netlernapi.Entity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<EntityContext>(
+    o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+    );
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
