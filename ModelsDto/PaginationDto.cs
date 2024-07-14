@@ -2,8 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DotnetApiApp.ModelsDto;
-
+namespace DotnetApiApp.ModelsDto
+{
+ 
 public class Pagination
 {
  
@@ -22,3 +23,4 @@ public class Pagination
 
 }
 
+}

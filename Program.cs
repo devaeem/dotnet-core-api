@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using netlernapi.Entity;
 
@@ -9,7 +10,13 @@ builder.Services.AddDbContext<EntityContext>(
     o => o.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(
+    options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.MaxDepth = 64;
+    }
+    );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

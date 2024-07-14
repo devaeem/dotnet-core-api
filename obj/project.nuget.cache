@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8RICnqUMxVA=",
+  "dgSpecHash": "X+y70uRrj9GJGLMgOF/PldZUUE842KJSzz6sVNmKkFticK049UR5AGmU3riZavC/cPF+rWn1Kao+MUoMDgbRJg==",
   "success": true,
   "projectFilePath": "/Users/aeem/Desktop/test/netlernapi/netlernapi.csproj",
   "expectedPackageFiles": [
@@ -39,6 +39,7 @@
     "/Users/aeem/.nuget/packages/mono.texttemplating/2.2.1/mono.texttemplating.2.2.1.nupkg.sha512",
     "/Users/aeem/.nuget/packages/mysql.data/9.0.0/mysql.data.9.0.0.nupkg.sha512",
     "/Users/aeem/.nuget/packages/mysql.entityframeworkcore/8.0.5/mysql.entityframeworkcore.8.0.5.nupkg.sha512",
+    "/Users/aeem/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512",
     "/Users/aeem/.nuget/packages/npgsql/8.0.3/npgsql.8.0.3.nupkg.sha512",
     "/Users/aeem/.nuget/packages/npgsql.entityframeworkcore.postgresql/8.0.4/npgsql.entityframeworkcore.postgresql.8.0.4.nupkg.sha512",
     "/Users/aeem/.nuget/packages/swashbuckle.aspnetcore/6.4.0/swashbuckle.aspnetcore.6.4.0.nupkg.sha512",

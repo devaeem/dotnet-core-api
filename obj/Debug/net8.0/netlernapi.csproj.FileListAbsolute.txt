@@ -122,3 +122,4 @@
 /Users/aeem/Desktop/test/netlernapi/bin/Debug/net8.0/runtimes/win-x64/native/krbcc64.dll
 /Users/aeem/Desktop/test/netlernapi/bin/Debug/net8.0/runtimes/win/lib/net8.0/System.Windows.Extensions.dll
 /Users/aeem/Desktop/test/netlernapi/obj/Debug/net8.0/netlernapi.sourcelink.json
+/Users/aeem/Desktop/test/netlernapi/bin/Debug/net8.0/Newtonsoft.Json.dll

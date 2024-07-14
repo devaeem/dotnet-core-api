@@ -4,25 +4,28 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace netlernapi.Entity
 {
     
-    
     [Table("products")]
-    public class Products
+    public class Product : BaseEntity
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [Column("id",TypeName = "int")]
-        public int Id { get; set; }
+        [MaxLength(255)]
+        [Column("product_name",TypeName = "varchar(255)")]
         public string? ProductName { get; set; }
+        [Column("product_price",TypeName = "int")]
         public int ProductPrice { get; set; }
+        [MaxLength(255)]
+        [Column("product_description",TypeName = "varchar(255)")]
         public string? ProductDescription { get; set; }
+        [MaxLength(255)]
+        [Column("product_image",TypeName = "varchar(255)")]
         public string? ProductImage { get; set; }
-        public int ProductStock { get; set; }
-        public int ProductCategoryId { get; set; }
-        public bool IsActive { get; set; }
-        [Column("createdAt",TypeName = "timestamp")]
-        public DateTime CreatedDate { get; set; }
-        [Column("updatedAt",TypeName = "timestamp")]
-        public DateTime UpdatedDate { get; set; }
+
+        [ForeignKey("Category_id")]
+        public Category Category { get; set; } = null!;
+
+
+
+
+
     }
 
 }
