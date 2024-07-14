@@ -1,4 +1,6 @@
 using DotnetApiApp.ModelsDto;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using netlernapi.Entity;
@@ -16,7 +18,7 @@ namespace netlernapi.Controllers
         {
             _context = context;
         }
-
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet]
         public async Task<IActionResult>  GetCategories(Pagination pagination)
   
@@ -71,7 +73,16 @@ namespace netlernapi.Controllers
 
             try
             {
-                var category = await _context.Categories.FindAsync(id);
+                var category = await _context.Categories
+                    .Where( c=> c.Id == id)
+                    .Select( c => new
+                    {
+                        c.Id,
+                        c.Name,
+                        createdAt =  c.CreatedDate,
+                        updatedAt=  c.UpdatedDate
+                    })
+                    .FirstOrDefaultAsync();
                 if (category is null)
                 {
                     return NotFound(new { msg = "Category not found" });
@@ -109,8 +120,8 @@ namespace netlernapi.Controllers
                 
                 };
             
-                await _context.Categories.AddAsync(category); // เพิ่ม Category ที่สร้างขึ้นลงใน DbContext
-                await _context.SaveChangesAsync(); // บันทึกการเปลี่ยนแปลงลงในฐานข้อมูล
+                await _context.Categories.AddAsync(category); 
+                await _context.SaveChangesAsync(); 
 
                 return Created("", new { msg = "Category created successfully" });
 
