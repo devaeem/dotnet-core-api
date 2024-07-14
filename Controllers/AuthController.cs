@@ -33,164 +33,116 @@ namespace netlernapi.Controllers
         }
         
         
-        // public AuthController(UserManager<User> userManager, SignInManager<User> signInManager,
-        //     IWebHostEnvironment webHostEnvironment, IConfiguration configuration)
-        // {
-        //     _userManager = userManager;
-        //     _signInManager = signInManager;
-        //     _webHostEnvironment = webHostEnvironment;
-        //     _configuration = configuration;
+
+      [HttpPost("login")]
+public async Task<IActionResult> Login([FromBody] LoginDto model)
+{
+    try
+    {
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null) return NotFound(new { msg = "ไม่พบผู้ใช้งานในระบบ" });
+
+        var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+
+        if (!result.Succeeded)
+        {
+            return Unauthorized(new { msg = "Password ไม่ถูกต้อง" });
+        }
+
+        return await CreateToken(user.Email!);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        return StatusCode(500, "Internal server error");
+    }
+}
+
+private async Task<IActionResult> CreateToken(string email)
+{
+    try
+    {
+        var user = await _userManager.FindByEmailAsync(email);
+        if (user == null) return NotFound();
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Email, user.Email!),
+            new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName)
+            // สามารถเพิ่ม ClaimTypes.Role หรือ claim อื่นๆ ตามต้องการได้
+        };
+
+        var jwtKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddHours(1),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtKey), SecurityAlgorithms.HmacSha256Signature)
+                
+        //     TokenValidationParameters = new TokenValidationParameters
+        //     {
+        //     ValidateIssuer = true, // ตรวจสอบ Issuer
+        //     ValidateAudience = true, // ตรวจสอบ Audience
+        //     ValidateLifetime = true, // ตรวจสอบ Lifetime
+        //     ValidateIssuerSigningKey = true, // ตรวจสอบ Issuer Signing Key
+        //     ValidIssuer = _configuration["Jwt:Issuer"], // Issuer ที่ถูกต้องตามที่กำหนด
+        //     ValidAudience = _configuration["Jwt:Audience"], // Audience ที่ถูกต้องตามที่กำหนด
+        //     IssuerSigningKey = new SymmetricSecurityKey(jwtKey) // Issuer Signing Key ที่ถูกต้อง
         // }
+        };
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto model)
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        var response = new
         {
-            try
-            {
-                var user = await _userManager.FindByEmailAsync(model.Email);
-                if(user == null) return NotFound( new {msg= "ไม่พบผอีเมลผู้ใช้งานในระบบ"});
-                
-                var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-                
-                if(!result.Succeeded)
-                {
-                    return Unauthorized(new {msg = "Password ไม่ถูกต้อง"});
-                }
-                return  await CreateToken(user.Email!);
+            accessToken = tokenHandler.WriteToken(token),
+            expires = token.ValidTo,
+            fullname = user.FirstName + " " + user.LastName,
+            role = user.Role // ปรับแก้ตามโค้ดของคุณ
+        };
 
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return StatusCode(500, "Internal server error");
-            }
+        return Ok(response);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        return StatusCode(500, "Internal server error");
+    }
+}
+
+[Authorize]
+[HttpGet("profile")]
+public async Task<IActionResult> Profile()
+{
+    try
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var user = await _userManager.FindByIdAsync(userId!);
+
+        if (user == null)
+        {
+            return NotFound(new { msg = "ไม่พบผู้ใช้งานในระบบ" });
         }
 
-        private async  Task<IActionResult> CreateToken(string email)
+        return Ok(new
         {
+            id = user.Id,
+            fullname = user.FirstName + " " + user.LastName,
+            role = user.Role // ปรับแก้ตามโค้ดของคุณ
+        });
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e);
+        return StatusCode(500, "Internal server error");
+    }
+}
 
-            try
-            {
-                
-                var user = await _userManager.FindByEmailAsync(email);
-                if(user == null) return NotFound( new {msg= "ไม่พบผอีเมลผู้ใช้งานในระบบ"});
-                
-                var payload = new List<Claim>
-                {
-                    
-                    new ("userId", user.Id),
-                    new (JwtRegisteredClaimNames.Email, user.Email!),
-                    
-                };
-                
-                // var userRoles = await _userManager.GetRolesAsync(user);
-                // if (userRoles != null)
-                // {
-                //     payload.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-                // }
-                
-                
-                var  jwtKey = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
-                
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(payload),
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtKey), SecurityAlgorithms.HmacSha256Signature)
-                };
-                
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-
-                var respone = new
-                {
-                    accessToken = tokenHandler.WriteToken(token),
-                    expires = token.ValidTo,
-                    // data = new
-                    // {
-                    //    fullname = user.FirstName + " " + user.LastName,
-                    //    role = user.Role
-                    // }
-                    
-                };
-                
-                return Ok(respone);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return StatusCode(500, "Internal server error");
-            }
-            
-        }
-    
-        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        [Authorize]
-        [HttpGet("profile")]
-        public async Task<IActionResult> Profile()
-        {
-            try
-            {
-               var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-               
-               if (string.IsNullOrEmpty(userId)) 
-               {
-                       return Unauthorized(new { msg = "ไม่พบข้อมูลผู้ใช้ในระบบการยืนยันตัวตน" });
-               }
-           
-               var userProfile = await _userManager.FindByIdAsync(userId);
-               
-                if (userProfile == null) return NotFound(new {msg = "ไม่พบผู้ใช้งานในระบบ"});
-                
-                return Ok(new
-                {
-                    id= userProfile.Id,
-                    fullname = userProfile.FirstName + " " + userProfile.LastName,
-                    role = userProfile.Role
-                });
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return StatusCode(500, "Internal server error");
-            }
-        }
-        
         
        
-        // [HttpGet("profile")]
-        // [Authorize]
-        // public async Task<IActionResult> Profile()
-        // {
-        //     try
-        //     {
-        //         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //
-        //         if (string.IsNullOrEmpty(userId))
-        //         {
-        //             return Unauthorized(new { msg = "ไม่พบข้อมูลผู้ใช้ในระบบการยืนยันตัวตน" });
-        //         }
-        //
-        //         var userProfile = await _userManager.FindByIdAsync(userId);
-        //
-        //         if (userProfile == null!) 
-        //         {
-        //             return NotFound(new { msg = "ไม่พบผู้ใช้งานในระบบ" });
-        //         }
-        //
-        //         return Ok(new
-        //         {
-        //             id = userProfile.Id,
-        //             fullname = $"{userProfile.FirstName} {userProfile.LastName}".Trim(),
-        //             role = userProfile.Role
-        //         });
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Console.WriteLine(e);
-        //         return StatusCode(500, new { msg = "เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์" });
-        //     }
-        // }
+        
         
         
         

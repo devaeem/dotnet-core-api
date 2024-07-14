@@ -18,8 +18,9 @@ namespace netlernapi.Controllers
         {
             _context = context;
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+      
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult>  GetCategories(Pagination pagination)
   
         {
