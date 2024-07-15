@@ -18,9 +18,8 @@ namespace netlernapi.Controllers
         {
             _context = context;
         }
-      
-        [HttpGet]
         [Authorize]
+        [HttpGet]
         public async Task<IActionResult>  GetCategories(Pagination pagination)
   
         {
@@ -67,7 +66,7 @@ namespace netlernapi.Controllers
         
       
         
-        
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(Guid id)
         {
@@ -103,7 +102,7 @@ namespace netlernapi.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CategoriesDto categoriesDto)
         {
@@ -133,7 +132,7 @@ namespace netlernapi.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-        
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoriesDto categoriesDto)
         {
@@ -175,7 +174,7 @@ namespace netlernapi.Controllers
             
         }
        
-        
+        [Authorize]
         [HttpDelete("{id}")]
         public  async Task<IActionResult> DeleteCategory(Guid id)
         {

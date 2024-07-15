@@ -78,18 +78,11 @@ private async Task<IActionResult> CreateToken(string email)
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(1),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtKey), SecurityAlgorithms.HmacSha256Signature)
-                
-        //     TokenValidationParameters = new TokenValidationParameters
-        //     {
-        //     ValidateIssuer = true, // ตรวจสอบ Issuer
-        //     ValidateAudience = true, // ตรวจสอบ Audience
-        //     ValidateLifetime = true, // ตรวจสอบ Lifetime
-        //     ValidateIssuerSigningKey = true, // ตรวจสอบ Issuer Signing Key
-        //     ValidIssuer = _configuration["Jwt:Issuer"], // Issuer ที่ถูกต้องตามที่กำหนด
-        //     ValidAudience = _configuration["Jwt:Audience"], // Audience ที่ถูกต้องตามที่กำหนด
-        //     IssuerSigningKey = new SymmetricSecurityKey(jwtKey) // Issuer Signing Key ที่ถูกต้อง
-        // }
+            Issuer = _configuration["Jwt:Issuer"],
+            Audience = _configuration["Jwt:Audience"],
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtKey), SecurityAlgorithms.HmacSha256)
+            //SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(jwtKey), SecurityAlgorithms.HmacSha256Signature)
+      
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -99,8 +92,8 @@ private async Task<IActionResult> CreateToken(string email)
         {
             accessToken = tokenHandler.WriteToken(token),
             expires = token.ValidTo,
-            fullname = user.FirstName + " " + user.LastName,
-            role = user.Role // ปรับแก้ตามโค้ดของคุณ
+            fullname =$"{user.FirstName} {user.LastName}",
+            role = user.Role 
         };
 
         return Ok(response);
@@ -130,7 +123,7 @@ public async Task<IActionResult> Profile()
         {
             id = user.Id,
             fullname = user.FirstName + " " + user.LastName,
-            role = user.Role // ปรับแก้ตามโค้ดของคุณ
+            role = user.Role 
         });
     }
     catch (Exception e)

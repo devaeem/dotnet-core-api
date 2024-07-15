@@ -1,5 +1,6 @@
 
 using DotnetApiApp.ModelsDto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using netlernapi.Entity;
@@ -16,7 +17,8 @@ namespace netlernapi.Controllers
         {
             _context = context;
         }
-
+        
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetProducts(Pagination pagination)
         {
@@ -35,7 +37,7 @@ namespace netlernapi.Controllers
                         price = p.ProductPrice, 
                         description = p.ProductDescription,
                         image = p.ProductImage,
-                        category = p.Category != null ? new
+                        category = p.Category != null! ? new
                         {
                             p.Category.Id,
                             name = p.Category.Name,
@@ -73,6 +75,7 @@ namespace netlernapi.Controllers
     
         }
         
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct(Guid id)
         {
@@ -89,7 +92,7 @@ namespace netlernapi.Controllers
                         price = p.ProductPrice, 
                         description = p.ProductDescription,
                         image = p.ProductImage,
-                        category = p.Category != null ? new
+                        category = p.Category != null! ? new
                         {
                             p.Category.Id,
                             name = p.Category.Name,
@@ -113,6 +116,7 @@ namespace netlernapi.Controllers
            
         }
         
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> CreateProduct(ProductDto productDto)
         {
@@ -158,6 +162,7 @@ namespace netlernapi.Controllers
           
         }
         
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(Guid id, UpdateProductDto updateProductDto)
         {
@@ -221,6 +226,7 @@ namespace netlernapi.Controllers
           
         }
         
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
