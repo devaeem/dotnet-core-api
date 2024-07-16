@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+50e0657f80882c2f44b583ed53512ff1e8137574")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+70d461410a576e916690c7ff75263cbddcee9b37")]
 [assembly: System.Reflection.AssemblyProductAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("netlernapi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
